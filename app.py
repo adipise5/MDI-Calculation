@@ -4,10 +4,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load real-world dataset (Replace with actual dataset path)
-df = pd.read_csv("AI_in_HealthCare_Dataset.csv")
+df = pd.read_csv("ai_healthcare_dataset.csv")
 
-# Ensure column names are correctly formatted
-df.columns = df.columns.str.strip()
+# Standardize column names
+df.columns = df.columns.str.strip().str.lower().str.replace(" ", "_")
 
 # Check if required columns exist
 required_columns = ['Patient_ID', 'Age', 'Gender', 'Blood_Pressure', 'Heart_Rate', 'Temperature', 'Diagnosis', 'Medication', 'Treatment_Duration', 'Insurance_Type']
@@ -22,10 +22,10 @@ else:
 
     # Calculate MDI from dataset
     def calculate_mdi(data):
-        bp_norm = normalize(data['Blood Pressure'].mean(), 60, 180)
-        hr_norm = normalize(data['Heart Rate'].mean(), 50, 150)
-        temp_norm = normalize(data['Temperature'].mean(), 95, 105)
-        td_norm = normalize(data['Treatment Duration'].mean(), 1, 365)
+        bp_norm = normalize(data.get('blood_pressure', pd.Series([0])).mean(), 60, 180)
+        hr_norm = normalize(data.get('heart_rate', pd.Series([0])).mean(), 50, 150)
+        temp_norm = normalize(data.get('temperature', pd.Series([0])).mean(), 95, 105)
+        td_norm = normalize(data.get('treatment_duration', pd.Series([0])).mean(), 1, 365)
         
         mdi = (0.25 * bp_norm) + (0.25 * hr_norm) + (0.25 * temp_norm) + (0.25 * td_norm)
         return round(mdi * 100, 2)
@@ -45,13 +45,13 @@ else:
         # Visualization - Line Chart for Heart Rate Trend
         st.subheader("Heart Rate Trends Over Patients")
         fig, ax = plt.subplots()
-        df['Heart Rate'].plot(kind='line', marker='o', ax=ax)
+        df['heart_rate'].plot(kind='line', marker='o', ax=ax)
         ax.set_ylabel("Heart Rate (bpm)")
         st.pyplot(fig)
         
         # Visualization - Radar Chart
         labels = ['Blood Pressure', 'Heart Rate', 'Temperature', 'Treatment Duration']
-        values = [df['Blood Pressure'].mean(), df['Heart Rate'].mean(), df['Temperature'].mean(), df['Treatment Duration'].mean()]
+        values = [df.get('blood_pressure', pd.Series([0])).mean(), df.get('heart_rate', pd.Series([0])).mean(), df.get('temperature', pd.Series([0])).mean(), df.get('treatment_duration', pd.Series([0])).mean()]
         values = [normalize(v, 0, 100) for v in values]
         angles = np.linspace(0, 2 * np.pi, len(labels), endpoint=False).tolist()
         
