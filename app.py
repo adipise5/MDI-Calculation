@@ -10,7 +10,7 @@ df = pd.read_csv("AI_in_HealthCare_Dataset.csv")
 df.columns = df.columns.str.strip()
 
 # Check if required columns exist
-required_columns = ['Patient ID', 'Age', 'Gender', 'Blood Pressure', 'Heart Rate', 'Temperature', 'Diagnosis', 'Medication', 'Treatment Duration', 'Insurance Type']
+required_columns = ['Patient_ID', 'Age', 'Gender', 'Blood_Pressure', 'Heart_Rate', 'Temperature', 'Diagnosis', 'Medication', 'Treatment_Duration', 'Insurance_Type']
 missing_columns = [col for col in required_columns if col not in df.columns]
 
 if missing_columns:
