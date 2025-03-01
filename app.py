@@ -10,7 +10,7 @@ df = pd.read_csv("AI_in_HealthCare_Dataset.csv")
 df.columns = df.columns.str.strip()
 
 # Check if required columns exist
-required_columns = ['Technological Penetration', 'Market Influence', 'Regulatory Adaptation', 'Clinical Outcomes', 'Competitive Market Dynamics', 'Year']
+required_columns = ['Patient ID', 'Age', 'Gender', 'Blood Pressure', 'Heart Rate', 'Temperature', 'Diagnosis', 'Medication', 'Treatment Duration', 'Insurance Type']
 missing_columns = [col for col in required_columns if col not in df.columns]
 
 if missing_columns:
@@ -22,13 +22,12 @@ else:
 
     # Calculate MDI from dataset
     def calculate_mdi(data):
-        tp_norm = normalize(data['Technological Penetration'].mean(), 0, 100)
-        mi_norm = normalize(data['Market Influence'].mean(), 0, 100)
-        ra_norm = normalize(data['Regulatory Adaptation'].mean(), 0, 100)
-        co_norm = normalize(data['Clinical Outcomes'].mean(), 0, 100)
-        cmd_norm = normalize(data['Competitive Market Dynamics'].mean(), 0, 100)
+        bp_norm = normalize(data['Blood Pressure'].mean(), 60, 180)
+        hr_norm = normalize(data['Heart Rate'].mean(), 50, 150)
+        temp_norm = normalize(data['Temperature'].mean(), 95, 105)
+        td_norm = normalize(data['Treatment Duration'].mean(), 1, 365)
         
-        mdi = (0.30 * tp_norm) + (0.20 * mi_norm) + (0.15 * ra_norm) + (0.20 * co_norm) + (0.15 * cmd_norm)
+        mdi = (0.25 * bp_norm) + (0.25 * hr_norm) + (0.25 * temp_norm) + (0.25 * td_norm)
         return round(mdi * 100, 2)
 
     # Streamlit UI
@@ -36,23 +35,23 @@ else:
         st.title("Market Disruption Index (MDI) for AI in Healthcare")
         
         # Display dataset
-        st.subheader("Real-World AI in Healthcare Dataset")
+        st.subheader("Healthcare Dataset Overview")
         st.dataframe(df.head())
         
         # Calculate MDI Score
         mdi_score = calculate_mdi(df)
         st.subheader(f"Market Disruption Index Score: {mdi_score}/100")
         
-        # Visualization - Line Chart for AI adoption trend
-        st.subheader("AI Adoption Over Time")
+        # Visualization - Line Chart for Heart Rate Trend
+        st.subheader("Heart Rate Trends Over Patients")
         fig, ax = plt.subplots()
-        df.groupby('Year')['Technological Penetration'].mean().plot(kind='line', marker='o', ax=ax)
-        ax.set_ylabel("AI Adoption Rate")
+        df['Heart Rate'].plot(kind='line', marker='o', ax=ax)
+        ax.set_ylabel("Heart Rate (bpm)")
         st.pyplot(fig)
         
         # Visualization - Radar Chart
-        labels = ['Technological Penetration', 'Market Influence', 'Regulatory Adaptation', 'Clinical Outcomes', 'Competitive Market Dynamics']
-        values = [df['Technological Penetration'].mean(), df['Market Influence'].mean(), df['Regulatory Adaptation'].mean(), df['Clinical Outcomes'].mean(), df['Competitive Market Dynamics'].mean()]
+        labels = ['Blood Pressure', 'Heart Rate', 'Temperature', 'Treatment Duration']
+        values = [df['Blood Pressure'].mean(), df['Heart Rate'].mean(), df['Temperature'].mean(), df['Treatment Duration'].mean()]
         values = [normalize(v, 0, 100) for v in values]
         angles = np.linspace(0, 2 * np.pi, len(labels), endpoint=False).tolist()
         
