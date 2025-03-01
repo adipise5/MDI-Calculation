@@ -4,7 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # Load real-world dataset (Replace with actual dataset path)
-df = pd.read_csv("ai_healthcare_dataset.csv")
+df = pd.read_csv("AI_in_HealthCare_Dataset.csv")
 
 # Normalize function
 def normalize(value, min_val, max_val):
